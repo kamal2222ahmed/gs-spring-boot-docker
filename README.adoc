@@ -234,8 +234,15 @@ $ docker run -e "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=5005,serve
 
 Congratulations! You've just created a Docker container for a Spring Boot app! Spring Boot apps run on port 8080 inside the container by default and we mapped that to the same port on the host using "-p" on the command line.
 
+== Notes
 
+ref git repo: https://github.com/Transmode/gradle-docker
+              https://github.com/sohrab-/microservice-simple-example
+              https://spring.io/guides/gs/spring-boot-docker/#initial
 
+to build image: gradle buildDocker
+To run the container for the above image: docker run -e "SPRING_PROFILES_ACTIVE=dev" -p 8080:8080 -t springio/gs-spring-boot-docker
+This docker microservice runs inside the secure network
 
 
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/footer.adoc[]
