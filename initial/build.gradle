@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'docker'
+
+buildscript {
+    repositories {
+        //mavenCentral()
+         maven {
+       url "http://${project.ext.nexus}/repository/public"
+   }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+        classpath('se.transmode.gradle:gradle-docker:1.2')
+        classpath ('org.codehaus.groovy:groovy-backports-compat23:2.3.5')
+    }
+}
+
+//group = 'skahmed'
+
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+docker {
+   //useApi true
+   hostUrl 'el2-dt-docker.uscis.dhs.gov:18445'
+   apiUsername 'skahmed'
+}
+
+jar {
+    //baseName = 'gs-spring-boot-docker'
+    //baseName = 'el2-dt-docker.uscis.dhs.gov:18445/gs-spring-boot-docker'
+    baseName = 'el2-dt-docker.uscis.dhs.gov:18445/skahmed'
+    version =  '0.1.0'
+}
+
+repositories {
+    //mavenCentral()
+     maven {
+       url "http://${project.ext.nexus}/repository/public"
+   }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web") 
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+  push = true
+  applicationName = jar.baseName
+  //applicationName = 'el2-dt-docker.uscis.dhs.gov:18445/skahmed/gs-spring-boot-docker'
+  //applicationName = 'gs-spring-boot-docker'
+  dockerfile = file('src/main/docker/Dockerfile')
+  doFirst {
+    copy {
+      from jar
+      into stageDir
+    }
+  }
+}
